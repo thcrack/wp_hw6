@@ -119,26 +119,29 @@ $("#submitData").click(function () {
 $('#editData').click(function(){
 
 	var dataArr = $("#item-info").serializeArray();
-    var picFile = $("#picData")[0].files[0];
+  var picFile = $("#picData")[0].files[0];
 
-    if (dataArr[0].value != null && dataArr[1].value != null && dataArr[2].value != null && picFile ) {
-    //check if it is picture(not yet)
+  if (dataArr[0].value != null && dataArr[1].value != null && dataArr[2].value != null) {
+  //check if it is picture(not yet)
 
-    	firebase.database().ref("items/" + currentItem.itemKey).set({
-    		title: dataArr[0].value,
-    		price: parseInt(dataArr[1].value),
-    		descrip: dataArr[2].value,
-    		seller: currentItem.seller,
-    		itemKey: currentItem.itemKey
-    	});
+  	firebase.database().ref("items/" + currentItem.itemKey).set({
+  		title: dataArr[0].value,
+  		price: parseInt(dataArr[1].value),
+  		descrip: dataArr[2].value,
+  		seller: currentItem.seller,
+  		itemKey: currentItem.itemKey
+  	});
 
-    	uploadModal.itemKey = currentItem.itemKey;
-    	uploadModal.submitPic(currentUser.uid);
+  	uploadModal.itemKey = currentItem.itemKey;
 
-    	items.once("value",reProduceAll);
-	    $("#upload-modal").modal('hide');
+  	if(picFile){
+  		uploadModal.submitPic(currentUser.uid);
+		}
 
-    }
+  	items.once("value",reProduceAll);
+    $("#upload-modal").modal('hide');
+
+  }
 
 });
 
@@ -178,17 +181,6 @@ function selectCheapItems() {
   items.orderByChild("price").endAt(9999).on("value",reProduceAll);
 
 }
-
-
-/*
-    商品按鈕在dropdown-menu中
-    三種商品篩選方式：
-    1. 顯示所有商品
-    2. 顯示價格高於 NT$10000 的商品
-    3. 顯示價格低於 NT$9999 的商品
-
-*/
-
 
 function logginOption(isLoggin) {
   if (isLoggin) {
